@@ -5,7 +5,7 @@ import ProductItem from "../ProductItem";
 import { QUERY_PRODUCTS } from "../../utils/queries";
 import spinner from "../../assets/spinner.gif";
 import { useStoreContext } from "../../utils/GlobalState";
-import { UPDATE_PRODUCTS } from "../../utils/actions";
+import { UPDATE_CART_QUANTITY, UPDATE_PRODUCTS } from "../../utils/actions";
 import { idbPromise } from "../../utils/helpers";
 
 function ProductList() {
@@ -23,6 +23,13 @@ function ProductList() {
       });
       data.products.forEach((product) => {
         idbPromise("products", "put", product);
+      });
+    } else if (!loading) {
+      idbPromise("product", "get").then((products) => {
+        dispatch({
+          type: UPDATE_PRODUCTS,
+          products: products,
+        });
       });
     }
   }, [data, loading, dispatch]);
